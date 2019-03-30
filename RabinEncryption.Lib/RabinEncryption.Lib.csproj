@@ -47,7 +47,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rabin\ExtendedEuclideanAlgorithm.cs" />
-    <Compile Include="Rabin\Rabin.cs" />
+    <Compile Include="Rabin\IRabinCryptoSystem.cs" />
+    <Compile Include="Rabin\RabinCryptoSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -12,7 +12,7 @@ namespace RabinEncryption.Lib
         {
             string msg = "SAMPLE MESSAGE";
             var encryptedMessage = msg
-                .Select(c => Rabin.Rabin.Encrypt(c, CompositeNumber))
+                .Select(c => Rabin.RabinCryptoSystem.Encrypt(c, CompositeNumber))
                 .ToList();
 
             for (int i = 0; i < encryptedMessage.Count; ++i)
@@ -21,10 +21,10 @@ namespace RabinEncryption.Lib
             }
 
             var decryptedMessage = encryptedMessage
-                .Select(e => Rabin.Rabin.Decrypt(e, P, Q))
+                .Select(e => Rabin.RabinCryptoSystem.Decrypt(e, P, Q))
                 .ToList();
 
-            Console.WriteLine(Rabin.Rabin.DecodeMessage(decryptedMessage));
+            Console.WriteLine(Rabin.RabinCryptoSystem.DecodeMessage(decryptedMessage));
         }
     }
 }

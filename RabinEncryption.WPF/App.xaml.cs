@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
+using RabinEncryption.WPF.Base;
+using StructureMap;
 
 namespace RabinEncryption.WPF
 {
@@ -13,5 +9,22 @@ namespace RabinEncryption.WPF
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            IOCContainer.Initialize();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            IContainer container = ObjectFactory.Container;
+            MainWindow = container.GetInstance<MainWindow>();
+            if (MainWindow != null)
+            {
+                MainWindow.Content = PageFactory.Get(PageName.Dashboard);
+                MainWindow.ShowDialog();
+            }
+        }
     }
 }
