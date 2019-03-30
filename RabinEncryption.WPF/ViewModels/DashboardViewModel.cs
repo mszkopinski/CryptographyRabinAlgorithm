@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using RabinEncryption.Lib.Rabin;
 using RabinEncryption.WPF.Base;
@@ -52,21 +53,23 @@ namespace RabinEncryption.WPF.ViewModels
             var encryptedMessage = StringToEncrypt
                 .Select(c => RabinCryptoSystem.Encrypt(c, CompositeNumber))
                 .ToList();
-            EncryptedString = String.Join("", encryptedMessage);
+            EncryptedString = String.Join(" ", encryptedMessage);
         }
 
         void OnMessageDecrypted(object sender)
         {
             if (String.IsNullOrEmpty(StringToDecrypt)) return;
-            var decryptedMessage = StringToEncrypt
-                .Select(c => RabinCryptoSystem.Decrypt(c, P, Q))
+
+            var messageToDecrypt = StringToDecrypt.Split(null);
+            var numbers = messageToDecrypt.Select(int.Parse).ToList();
+            var decryptedMessage = numbers
+                .Select(e => RabinCryptoSystem.Decrypt(e, P, Q))
                 .ToList();
             DecryptedString = RabinCryptoSystem.DecodeMessage(decryptedMessage);
         }
 
         void OnCopiedToClipboard(object sender)
         {
-            
             System.Windows.Clipboard.SetText(EncryptedString);
         }
     }

@@ -17,27 +17,40 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBox Height="30" Width="250" Grid.Row="0" Grid.Column="0" 
-                 Text="{Binding StringToEncrypt}" VerticalContentAlignment="Center"/>
-        <TextBox Height="30" Width="250" Grid.Row="1" Grid.Column="0" 
-                 Text="{Binding StringToDecrypt}" VerticalContentAlignment="Center"/>
-        <Button Command="{Binding EncryptMessageCommand}" Height="70" Width="250" Grid.Row="0" Grid.Column="1"
-                Background="LawnGreen" FontSize="30" FontWeight="Bold">
-            ENCRYPT
-        </Button>
+        <TextBox Height="90" Width="180" Grid.Row="0" Grid.Column="0" 
+                 Text="{Binding StringToEncrypt}"/>
+        <TextBox Height="90" Width="180" Grid.Row="1" Grid.Column="0" 
+                 Text="{Binding StringToDecrypt}"/>
+        <Grid Height="70" Width="250" Grid.Column="1" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Command="{Binding EncryptMessageCommand}"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                    Background="LawnGreen" FontSize="30" FontWeight="Bold">
+                ENCRYPT
+            </Button>
+            <Button Command="{Binding CopyToClipboardCommand}"  Grid.Row="0" Grid.Column="2" 
+                    Background="DarkOliveGreen" FontSize="30" FontWeight="Bold">
+                C
+            </Button>
+        </Grid>
         <Button Command="{Binding DecryptMessageCommand}" Height="70" Width="250" Grid.Row="1" Grid.Column="1"
                 Background="Red" FontSize="30" FontWeight="Bold">
             DECRYPT
         </Button>
-        <Label Foreground="White" Height="50" Width="250" Grid.Row="0" Grid.Column="2"
-               HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="{Binding EncryptedString}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseClick" >
-                    <i:InvokeCommandAction Command="{Binding CopyToClipboardCommand}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
+        <Label Foreground="White" Margin="20" Grid.Row="0" Grid.Column="2"
+               HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+            <Label.Content>
+                <AccessText TextWrapping="Wrap" Text="{Binding EncryptedString}"/>
+            </Label.Content>
         </Label>
-        <Label Foreground="White" Height="50" Width="250" Grid.Row="1" Grid.Column="2"
-               HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="{Binding DecryptedString}"/>
+        <Label Foreground="White" Margin="20" Grid.Row="1" Grid.Column="2"
+               HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+            <Label.Content>
+                <AccessText TextWrapping="Wrap" Text="{Binding DecryptedString}"/>
+            </Label.Content>
+        </Label>
     </Grid>
 </UserControl>
