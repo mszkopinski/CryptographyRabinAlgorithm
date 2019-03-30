@@ -30,3 +30,7 @@ C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\obj\Debug\R
 C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\obj\Debug\RabinEncryption.WPF.csproj.CopyComplete
 C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\obj\Debug\RabinEncryption.WPF.exe
 C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\obj\Debug\RabinEncryption.WPF.pdb
+C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\Microsoft.Expression.Interactions.xml
+C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\System.Windows.Interactivity.xml
