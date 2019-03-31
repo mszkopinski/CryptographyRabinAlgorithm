@@ -9,8 +9,7 @@ namespace RabinEncryption.WPF.ViewModels
 {
     public class DashboardViewModel : BaseViewModel, IDashboardViewModel
     {
-        const int P = 167, Q = 151;
-        const int CompositeNumber = P * Q;
+        public string PublicKey => RabinCryptoSystem.PublicKey.ToString();
 
         public string EncryptedString
         {
@@ -51,7 +50,7 @@ namespace RabinEncryption.WPF.ViewModels
         {
             if (String.IsNullOrEmpty(StringToEncrypt)) return;
             var encryptedMessage = StringToEncrypt
-                .Select(c => RabinCryptoSystem.Encrypt(c, CompositeNumber))
+                .Select(c => RabinCryptoSystem.Encrypt(c, RabinCryptoSystem.PublicKey))
                 .ToList();
             EncryptedString = String.Join(" ", encryptedMessage);
         }
@@ -63,7 +62,7 @@ namespace RabinEncryption.WPF.ViewModels
             var messageToDecrypt = StringToDecrypt.Split(null);
             var numbers = messageToDecrypt.Select(int.Parse).ToList();
             var decryptedMessage = numbers
-                .Select(e => RabinCryptoSystem.Decrypt(e, P, Q))
+                .Select(e => RabinCryptoSystem.Decrypt(e, RabinCryptoSystem.P, RabinCryptoSystem.Q))
                 .ToList();
             DecryptedString = RabinCryptoSystem.DecodeMessage(decryptedMessage);
         }

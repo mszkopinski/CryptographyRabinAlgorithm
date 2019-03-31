@@ -21,7 +21,9 @@
                  Foreground="White" TextWrapping="Wrap" Text="{Binding StringToEncrypt}"/>
         <TextBox Grid.Row="1" Grid.Column="0" Background="#3FFFFFFF" Margin="25, 25, 0, 25"
                  Foreground="White" TextWrapping="Wrap" Text="{Binding StringToDecrypt}"/>
-        <Grid Height="70" Width="250" Grid.Column="1" Grid.Row="0">
+        <Label Foreground="White" FontSize="15" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" HorizontalContentAlignment="Center">PUBLIC KEY:</Label>
+        <Label Foreground="DarkOrange" FontSize="30" Grid.Row="0" Grid.Column="1" Margin="0, 20, 0, 0" VerticalAlignment="Top" FontWeight="Bold" HorizontalContentAlignment="Center" Content="{Binding PublicKey}"/>
+            <Grid Height="70" Width="250" Grid.Column="1" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
