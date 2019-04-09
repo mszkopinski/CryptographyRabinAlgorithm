@@ -44,11 +44,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Extensions\Utils.cs" />
+    <Compile Include="Generators\BinaryGenerator.cs" />
+    <Compile Include="Generators\DecimalGenerator.cs" />
+    <Compile Include="Generators\PrimeGenerator.cs" />
+    <Compile Include="Generators\RabinKeysGenerator.cs" />
+    <Compile Include="Generators\RandomNumberGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rabin\ExtendedEuclideanAlgorithm.cs" />
     <Compile Include="Rabin\IRabinCryptoSystem.cs" />
-    <Compile Include="Rabin\RabinCryptoSystem.cs" />
+    <Compile Include="Rabin\RabinEncryptor.cs" />
+    <Compile Include="Rabin\RabinCryptoSystemOld.cs" />
+    <Compile Include="Rabin\RabinDecryptor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

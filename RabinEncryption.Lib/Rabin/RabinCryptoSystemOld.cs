@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RabinEncryption.Lib.Rabin
 {
-    public class RabinCryptoSystem : IRabinCryptoSystem
+    public class RabinCryptoSystemOld : IRabinCryptoSystem
     {
         public int P { get; private set; }
         public int Q { get; private set; }
@@ -11,7 +11,7 @@ namespace RabinEncryption.Lib.Rabin
 
         // as private key rabin uses two prime number which p = q = 3 mod 
         // public key is a product of P and Q primes
-        public RabinCryptoSystem(int p, int q)
+        public RabinCryptoSystemOld(int p, int q)
         {
             P = p;
             Q = q;
@@ -83,8 +83,8 @@ namespace RabinEncryption.Lib.Rabin
 
             // Extended Euclidean algorithm, we wish to find yp and yq such that yp * p + yq * q = 1
             var arr = ExtendedEuclideanAlgorithm.Calculate(p, q);
-            var yP = arr[0] * p * mQ;
-            var yQ = arr[1] * q * mP;
+            var yP = (int)arr.Item1 * p * mQ;
+            var yQ = (int)arr.Item2 * q * mP;
 
             // Calculate square roots +r, -r, +s, -s. One if these square roots mod n is the original
             // plaintext

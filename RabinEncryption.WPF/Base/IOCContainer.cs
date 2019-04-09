@@ -11,10 +11,13 @@ namespace RabinEncryption.WPF.Base
         {
             ObjectFactory.Initialize(x =>
             {
-                IRabinCryptoSystem rabinCryptoSystem = new RabinCryptoSystem(167, 151);
-                var dashboardVM = new DashboardViewModel(rabinCryptoSystem);
+                var rabinEncryptor = new RabinEncryptor();
+                var rabinDecryptor = new RabinDecryptor();
+
+                var dashboardVM = new DashboardViewModel(rabinEncryptor, rabinDecryptor);
                 x.For<MainWindow>().Use<MainWindow>();
-                x.For<IRabinCryptoSystem>().Use(rabinCryptoSystem);
+                x.For<IRabinEncryptor>().Use(rabinEncryptor);
+                x.For<IRabinDecryptor>().Use(rabinDecryptor);
                 x.For<IDashboardViewModel>().Use(dashboardVM);
                 x.For<DashboardView>().Use<DashboardView>();
             });

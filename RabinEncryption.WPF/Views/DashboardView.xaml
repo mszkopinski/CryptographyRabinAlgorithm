@@ -9,7 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="#2c2c2c">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="190" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -17,40 +17,90 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" Grid.Column="0" Background="#3FFFFFFF" Margin="25, 25, 0, 25"
+            <Grid Grid.Column="0" Grid.RowSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+                <Button Command="{Binding EncryptMessageCommand}"  Grid.Row="0" Grid.Column="0"
+                        Background="#232323" FontSize="20" FontWeight="Bold">
+                    ENCRYPT
+                </Button>
+                <Button Command="{Binding DecryptMessageCommand}"  Grid.Row="1" Grid.Column="0"
+                        Background="#232323" FontSize="20" FontWeight="Bold" IsEnabled="{Binding CanDecrypt}">
+                    DECRYPT
+                </Button>
+                <Separator Grid.Row="2" Background="Black"/>
+                <Button Command="{Binding LoadFileCommand}"  Grid.Row="3" Grid.Column="0"
+                        Background="#232323" FontSize="20" FontWeight="Bold">
+                    LOAD FILE
+                </Button>
+                <Button Command="{Binding SaveFileCommand}"  Grid.Row="4" Grid.Column="0"
+                        Background="#232323" FontSize="20" FontWeight="Bold">
+                    SAVE FILE
+                </Button>
+                <Separator Grid.Row="5" Background="Black"/>
+                <Button Command="{Binding RefreshKeysCommand}"  Grid.Row="6" Grid.Column="0"
+                        Background="#232323" FontSize="20" FontWeight="Bold">
+                    GENERATE KEYS
+                </Button>
+        </Grid>
+        <!--<TextBox Grid.Row="1" Grid.Column="1" Background="#3FFFFFFF" Margin="25, 25, 0, 25"
                  Foreground="White" TextWrapping="Wrap" Text="{Binding StringToEncrypt}"/>
-        <TextBox Grid.Row="1" Grid.Column="0" Background="#3FFFFFFF" Margin="25, 25, 0, 25"
+        <TextBox Grid.Row="1" Grid.Column="1" Background="#3FFFFFFF" Margin="25, 25, 0, 25"
                  Foreground="White" TextWrapping="Wrap" Text="{Binding StringToDecrypt}"/>
-        <Label Foreground="White" FontSize="15" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" HorizontalContentAlignment="Center">PUBLIC KEY:</Label>
-        <Label Foreground="DarkOrange" FontSize="30" Grid.Row="0" Grid.Column="1" Margin="0, 20, 0, 0" VerticalAlignment="Top" FontWeight="Bold" HorizontalContentAlignment="Center" Content="{Binding PublicKey}"/>
+            <Button Command="{Binding RefreshKeysCommand}"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1"
+                    Background="CadetBlue" FontSize="30" FontWeight="Bold">
+                R
+            </Button>
+            <Label Foreground="White" FontSize="15" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0" HorizontalContentAlignment="Left">PUBLIC KEY:</Label>
+            <Label Foreground="DarkOrange" FontSize="15" Grid.Row="0" Grid.Column="1" Margin="0, 0, 10, 0" VerticalAlignment="Center" FontWeight="Bold" HorizontalContentAlignment="Right" Content="{Binding PublicKey}"/>-->
+        <!--</Grid>
             <Grid Height="70" Width="250" Grid.Column="1" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Command="{Binding EncryptMessageCommand}"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                    Background="CadetBlue" FontSize="30" FontWeight="Bold">
-                ENCRYPT
-            </Button>
+       
             <Button Command="{Binding CopyToClipboardCommand}"  Grid.Row="0" Grid.Column="2" 
                     Background="GreenYellow" FontSize="12" FontWeight="Bold" HorizontalContentAlignment="Center">
                 <Button.Content>
                     <AccessText TextWrapping="Wrap" TextAlignment="Center">COPY TO CLIPBOARD</AccessText>
                 </Button.Content>
             </Button>
-        </Grid>
-        <Button Command="{Binding DecryptMessageCommand}" Height="70" Width="250" Grid.Row="1" Grid.Column="1"
-                Background="CadetBlue" FontSize="30" FontWeight="Bold">
-            DECRYPT
-        </Button>
+           </Grid>-->
 
-        <TextBox Grid.Row="0" Grid.Column="2" Background="#3FFFFFFF" Margin="0, 25, 25, 25" Foreground="White"
-                 Text="{Binding EncryptedString}" TextWrapping="Wrap" IsEnabled="false">
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"  VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Left">
+            <Label Foreground="White" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,30" HorizontalContentAlignment="Left">CONTENT</Label>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"  VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Label Foreground="White" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,30" HorizontalContentAlignment="Left">ENCRYPTED</Label>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"  VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Label Foreground="White" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0" HorizontalContentAlignment="Left">PUBLIC KEY:</Label>
+            <Label Foreground="DarkOrange" FontSize="15" Margin="0, 0, 10, 0" VerticalAlignment="Center" FontWeight="Bold" HorizontalContentAlignment="Right" Content="{Binding PublicKey}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"  VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Left">
+            <Label Foreground="White" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,-30" HorizontalContentAlignment="Left">DECRYPTED</Label>
+        </StackPanel>
+
+        <TextBox Grid.Row="0" Grid.Column="1" Background="#3FFFFFFF" Margin="25, 25, 25, 25" Foreground="White"
+                 Text="{Binding StringToEncrypt}" TextWrapping="Wrap" IsEnabled="true">
         </TextBox>
-
-        <TextBox Grid.Row="1" Grid.Column="2" Background="#3FFFFFFF" Margin="0, 25, 25, 25" Foreground="White"
-                 Text="{Binding DecryptedString}" TextWrapping="Wrap" IsEnabled="false">
+        <TextBox Grid.Row="0" Grid.Column="2" Background="#3FFFFFFF" Margin="25, 25, 25, 25" Foreground="White"
+                 Text="{Binding EncryptedString}" TextWrapping="Wrap" IsEnabled="true">
+        </TextBox>
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Background="#3FFFFFFF" Margin="25, 25, 25, 25" Foreground="White"
+                 Text="{Binding DecryptedString}" TextWrapping="Wrap" IsEnabled="true">
         </TextBox>
     </Grid>
 </UserControl>

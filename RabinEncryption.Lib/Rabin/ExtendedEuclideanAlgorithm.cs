@@ -1,33 +1,30 @@
-﻿namespace RabinEncryption.Lib.Rabin
+﻿using System;
+
+namespace RabinEncryption.Lib.Rabin
 {
     public static class ExtendedEuclideanAlgorithm
     {
-        public static int[] Calculate(int a, int b)
+        public static Tuple<long, long> Calculate(long a, long b)
         {
-            if (b > a)
-            {
-                var temp = a;
-                a = b;
-                b = temp;
-            }
-            int x = 0, lastX = 1, y = 1, lastY = 0;
+            long x = 0, y = 1;
+            long previousX = 1, previousY = 0;
             while (b != 0)
             {
-                var q = a / b;
-
-                var temp1 = a % b;
+                long q = a / b;
+                long r = a % b;
                 a = b;
-                b = temp1;
+                b = r;
 
-                var temp2 = x;
-                x = lastX - q * x;
-                lastX = temp2;
+                var temp = x;
+                x = previousX - q * x;
+                previousX = temp;
 
-                var temp3 = y;
-                y = lastY - q * y;
-                lastY = temp3;
+                temp = y;
+                y = previousY - q * y;
+                previousY = temp;
             }
-            return new[] { lastX, lastY, 1 };
+
+            return new Tuple<long, long>(previousX, previousY);
         }
     }
 }
