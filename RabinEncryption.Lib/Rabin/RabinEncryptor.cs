@@ -39,7 +39,7 @@ namespace RabinEncryption.Lib.Rabin
             {
                 var c = (long)(Math.Pow(padMsg, 2) % publicKey);
                 finalMessage.Add(c);
-                breakSize = binaryArrM.Count; //-3 because we already aded it on decryption side so it would work for both Message break and non break
+                breakSize = binaryArrM.Count; 
             }
             else if (padMsg >= publicKey)
             {

@@ -19,54 +19,53 @@ namespace RabinEncryption.Lib.Rabin
 
             var res = ExtendedEuclideanAlgorithm.Calculate(p, q);
 
-            var invp = res.Item1;
-            if (invp < 0) { invp = q + invp; }
+            var yp = res.Item1;
+            if (yp < 0) { yp = q + yp; }
 
-            var invq = res.Item2;
-            if (invq < 0) { invq = p + invq; }
+            var yq = res.Item2;
+            if (yq < 0) { yq = p + yq; }
 
             for (i = 0; i < cipherText.Count; i++)
             {
-                var r = Utils.ModPow(cipherText[(int)i], (p + 1) / 4, p);
-                var s = Utils.ModPow(cipherText[(int)i], (q + 1) / 4, q);
-                var x = (invp * p * s + invq * q * r) % n;
-                var y = (invp * p * s - invq * q * r) % n;
+                var mp = Utils.ModPow(cipherText[(int)i], (p + 1) / 4, p);
+                var mq = Utils.ModPow(cipherText[(int)i], (q + 1) / 4, q);
+                var r = (yp * p * mq + yq * q * mp) % n;
+                var s = (yp * p * mq - yq * q * mp) % n;
 
                 // Calculate four possible values
-                var m1 = x;
+                var m1 = r;
                 if (m1 < 0) { m1 = n + m1; }
-                var m2 = -x % n;
+                var m2 = -r % n;
                 if (m2 < 0) { m2 = n + m2; }
-                var m3 = y;
+                var m3 = s;
                 if (m3 < 0) { m3 = n + m3; }
-                var m4 = -y % n;
+                var m4 = -s % n;
                 if (m4 < 0) { m4 = n + m4; }
 
-                var check = new List<int>[4];
+                var binaryToCheck = new List<int>[4];
                 // all are in reverse order
-                check[0] = BinaryGenerator.GenerateBinary(m1);
-                check[1] = BinaryGenerator.GenerateBinary(m2);
-                check[2] = BinaryGenerator.GenerateBinary(m3);
-                check[3] = BinaryGenerator.GenerateBinary(m4);
+                binaryToCheck[0] = BinaryGenerator.GenerateBinary(m1);
+                binaryToCheck[1] = BinaryGenerator.GenerateBinary(m2);
+                binaryToCheck[2] = BinaryGenerator.GenerateBinary(m3);
+                binaryToCheck[3] = BinaryGenerator.GenerateBinary(m4);
 
                 int j = 0;
                 for (j = 0; j < 4; j++)
                 {
-                    if (check[j].Count < breakSize)
+                    if (binaryToCheck[j].Count < breakSize)
                     {
-
-                        while (check[j].Count != breakSize)
+                        while (binaryToCheck[j].Count != breakSize)
                         {
-                            check[j].Add(0);
+                            binaryToCheck[j].Add(0);
                         }
                     }
-                    if (check[j].Count <= breakSize + 3)
+                    if (binaryToCheck[j].Count <= breakSize + 3)
                     {
-                        var correct = -1;
-                        correct = check[j][0] + check[j][1] + check[j][2];
-                        if (correct == 0)
+                        var paddingScheme = -1;
+                        paddingScheme = binaryToCheck[j][0] + binaryToCheck[j][1] + binaryToCheck[j][2];
+                        if (paddingScheme == 0)
                         {
-                            var msg = new List<int>(check[j].Skip(3));
+                            var msg = new List<int>(binaryToCheck[j].Skip(3));
                             msg = msg.GetReversed();
                             var piece = DecimalGenerator.GetDecimal(msg);
                             messagePieces.Add(piece);
