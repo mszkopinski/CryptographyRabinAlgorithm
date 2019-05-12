@@ -60,6 +60,7 @@ namespace RabinEncryption.WPF.ViewModels
         public ICommand DecryptMessageCommand => new RelayCommand(OnMessageDecrypted, null);
         public ICommand CopyToClipboardCommand => new RelayCommand(OnCopiedToClipboard, null);
         public ICommand RefreshKeysCommand => new RelayCommand(OnRefreshKeys, null);
+        public ICommand RefreshPublicKeyCommand => new RelayCommand(OnRefreshPublicKey, null);
 
         public readonly IRabinEncryptor RabinEncryptor;
         public readonly IRabinDecryptor RabinDecryptor;
@@ -75,6 +76,7 @@ namespace RabinEncryption.WPF.ViewModels
         readonly List<Task<long>> decryptionTasks = new List<Task<long>>();
         readonly List<Task<Tuple<long, long>>> encryptionTasks = new List<Task<Tuple<long, long>>>();
         State currentState = State.String;
+        private List<Tuple<long, long>> encryptionResults;
 
         async void OnMessageEncrypted(object sender)
         {
@@ -117,8 +119,14 @@ namespace RabinEncryption.WPF.ViewModels
             }
 
             await Task.WhenAll(encryptionTasks);
-            var encryptionResults = new List<Tuple<long, long>>(encryptionTasks.Select(t => t.Result));
+            encryptionResults = new List<Tuple<long, long>>(encryptionTasks.Select(t => t.Result));
+            EncryptedString = string.Join(" ", encryptionResults.Select(res => res.Item1));
 
+            CanDecrypt = true;
+        }
+
+        async void OnMessageDecrypted(object sender)
+        {
             decryptionTasks.Clear();
             foreach (var res in encryptionResults)
             {
@@ -133,12 +141,6 @@ namespace RabinEncryption.WPF.ViewModels
                     currentKeys.Item3, breakSize)));
             }
 
-            EncryptedString = string.Join(" ", encryptionResults.Select(res => res.Item1));
-            CanDecrypt = true;
-        }
-
-        async void OnMessageDecrypted(object sender)
-        {
             if (decryptionTasks.Count == 0) return;
 
             await Task.WhenAll(decryptionTasks);
@@ -162,6 +164,13 @@ namespace RabinEncryption.WPF.ViewModels
         void OnRefreshKeys(object sender)
         {
             currentKeys = RabinKeysGenerator.GetKeys();
+            PublicKey = currentKeys.Item3.ToString();
+        }
+
+        void OnRefreshPublicKey(object sender)
+        {
+            var newKeys = RabinKeysGenerator.GetKeys();
+            currentKeys = new Tuple<long, long, long>(currentKeys.Item1, currentKeys.Item2, newKeys.Item3);
             PublicKey = currentKeys.Item3.ToString();
         }
 

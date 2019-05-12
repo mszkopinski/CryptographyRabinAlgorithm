@@ -10,11 +10,8 @@ C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\S
 C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\StructureMap.Net4.dll
 C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\RabinEncryption.Lib.pdb
 C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\RabinEncryption.Lib.exe.config
-C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\Microsoft.Practices.ServiceLocation.pdb
 C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\Microsoft.Practices.ServiceLocation.xml
-C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\StructureMap.pdb
 C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\StructureMap.xml
-C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\bin\Debug\StructureMap.Net4.pdb
 C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\obj\Debug\RabinEncryption.WPF.csprojAssemblyReference.cache
 C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\obj\Debug\MainWindow.g.cs
 C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.WPF\obj\Debug\Views\DashboardView.g.cs

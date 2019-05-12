@@ -1,0 +1,7 @@
+C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.Lib\bin\Debug\RabinEncryption.Lib.exe.config
+C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.Lib\bin\Debug\RabinEncryption.Lib.exe
+C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.Lib\bin\Debug\RabinEncryption.Lib.pdb
+C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.Lib\obj\Debug\RabinEncryption.Lib.csprojAssemblyReference.cache
+C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.Lib\obj\Debug\RabinEncryption.Lib.csproj.CoreCompileInputs.cache
+C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.Lib\obj\Debug\RabinEncryption.Lib.exe
+C:\Users\Michal\repos\CryptographyRabinAlgorithm\RabinEncryption.Lib\obj\Debug\RabinEncryption.Lib.pdb
