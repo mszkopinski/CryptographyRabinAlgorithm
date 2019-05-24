@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.Win32;
+using RabinEncryption.Lib.Extensions;
 using RabinEncryption.Lib.Generators;
 using RabinEncryption.Lib.Rabin;
 using RabinEncryption.WPF.Base;
@@ -14,13 +15,13 @@ namespace RabinEncryption.WPF.ViewModels
 {
     public class DashboardViewModel : BaseViewModel, IDashboardViewModel
     {
-        public string PublicKey
+        public string PublicKeyString
         {
-            get => publicKey;
-            set { publicKey = value; OnPropertyChanged(nameof(PublicKey)); }
+            get => publicKeyString;
+            set { publicKeyString = value; OnPropertyChanged(nameof(PublicKeyString)); }
         }
 
-        string publicKey;
+        string publicKeyString;
 
         public string StringToEncrypt
         {
@@ -64,7 +65,16 @@ namespace RabinEncryption.WPF.ViewModels
 
         public readonly IRabinEncryptor RabinEncryptor;
         public readonly IRabinDecryptor RabinDecryptor;
-        Tuple<long, long, long> currentKeys;
+
+        private byte[] decryptedBytes = null;
+        private byte[] encryptedBytes = null;
+        private byte[] bytesToEncrypt = null;
+        private BigNumber[] messageBlocks;
+        private BigNumber[] encryptedMessageBlocks;
+
+        private BigNumber p;
+        private BigNumber q;
+        private BigNumber publicKey;
 
         public DashboardViewModel(IRabinEncryptor rabinEncryptor, IRabinDecryptor rabinDecryptor)
         {
@@ -73,87 +83,55 @@ namespace RabinEncryption.WPF.ViewModels
             OnRefreshKeys(null);
         }
 
-        readonly List<Task<long>> decryptionTasks = new List<Task<long>>();
-        readonly List<Task<Tuple<long, long>>> encryptionTasks = new List<Task<Tuple<long, long>>>();
-        State currentState = State.String;
-        private List<Tuple<long, long>> encryptionResults;
-
         async void OnMessageEncrypted(object sender)
         {
             if (StringToEncrypt.Length == 0) return;
+            bytesToEncrypt = Encoding.UTF32.GetBytes(StringToEncrypt);
 
-            var bytes = new List<byte>();
-            var splittedString = StringToEncrypt.Split(new[] {" "}, StringSplitOptions.None);
-            if (splittedString.All(s => byte.TryParse(s, out _)))
+            await Task.Factory.StartNew(() =>
             {
-                bytes = splittedString.Select(byte.Parse).ToList();
-                currentState = State.File;
-            }
-            else
-            {
-                bytes = Encoding.UTF32.GetBytes(StringToEncrypt).ToList();
-                currentState = State.String;
-            }
+                encryptedMessageBlocks = RabinEncryptor.Encrypt(bytesToEncrypt, p, publicKey);
+            });
 
-            DecryptedString = String.Empty;
-            EncryptedString = String.Empty;
-
-            encryptionTasks.Clear();
-            if (bytes.Count != 0)
-            {
-                foreach (var b in bytes)
-                {
-                    if (b == 0)
-                    {
-                        encryptionTasks.Add(Task.Factory.StartNew(() => new Tuple<long, long>(0, 0)));
-                        continue;
-                    }
-
-                    var encryptedMsg = RabinEncryptor.Encrypt(b, currentKeys.Item3, out var breakSize);
-                    foreach (var value in encryptedMsg)
-                    {
-                        encryptionTasks.Add(Task.Factory.StartNew(() =>
-                            new Tuple<long, long>(value, breakSize)));
-                    }
-                }
-            }
-
-            await Task.WhenAll(encryptionTasks);
-            encryptionResults = new List<Tuple<long, long>>(encryptionTasks.Select(t => t.Result));
-            EncryptedString = string.Join(" ", encryptionResults.Select(res => res.Item1));
-
+            var bytes = encryptedMessageBlocks.SelectMany(bigNum => bigNum.GetBytes()).ToArray();
+            EncryptedString = bytes.AsString();
             CanDecrypt = true;
         }
 
         async void OnMessageDecrypted(object sender)
         {
-            decryptionTasks.Clear();
-            foreach (var res in encryptionResults)
+            var encryptedBlocksLength = encryptedMessageBlocks.Length;
+            var bytesToTest = new BigNumber[encryptedBlocksLength];
+            var privateKeyBytes = p.GetBytes();
+
+            await Task.Factory.StartNew(() =>
             {
-                var ciphterText = res.Item1;
-                var breakSize = res.Item2;
-                if (ciphterText == 0)
+                for (int i = 0; i < encryptedBlocksLength; i++)
                 {
-                    decryptionTasks.Add(Task.Factory.StartNew(() => (long)0));
-                    continue;
+                    var results = RabinDecryptor.GetDecryptedValues(i, encryptedMessageBlocks, p, q, publicKey);
+                    bytesToTest[i] = results.SingleOrDefault(res =>
+                    {
+                        var resBytes = res.GetBytes();
+                        return resBytes[resBytes.Length - 1] == privateKeyBytes[privateKeyBytes.Length - 1]
+                               && resBytes[resBytes.Length - 2] ==
+                               privateKeyBytes[privateKeyBytes.Length - 2]
+                               && resBytes[resBytes.Length - 3] ==
+                               privateKeyBytes[privateKeyBytes.Length - 3];
+                    });
+                      
                 }
-                decryptionTasks.Add(Task.Factory.StartNew(() => RabinDecryptor.Decrypt(new List<long> { ciphterText }, currentKeys.Item1, currentKeys.Item2,
-                    currentKeys.Item3, breakSize)));
+            });
+
+            decryptedBytes = new byte[0];
+            for (int i = 0; i < bytesToTest.Length; i++)
+            {
+                decryptedBytes = decryptedBytes.Concat(bytesToTest[i].GetBytes().CutLastThreeBytes()).ToArray();
             }
 
-            if (decryptionTasks.Count == 0) return;
-
-            await Task.WhenAll(decryptionTasks);
-            var decryptionResults = new List<long>(decryptionTasks.Select(t => t.Result));
-            if (currentState != State.String)
-            {
-                DecryptedString = string.Join(" ", decryptionResults);
-            }
-            else
-            {
-                DecryptedString = string.Join(" ",
-                    Encoding.UTF32.GetString(decryptionResults.Select(l => (byte) l).ToArray()));
-            }
+            var recoveredString = Encoding.UTF32.GetString(decryptedBytes);
+            recoveredString = recoveredString.Replace("\0", "");
+            recoveredString = recoveredString.Substring(0, recoveredString.Length - 1); 
+            DecryptedString = recoveredString;
         }
 
         void OnCopiedToClipboard(object sender)
@@ -163,15 +141,15 @@ namespace RabinEncryption.WPF.ViewModels
 
         void OnRefreshKeys(object sender)
         {
-            currentKeys = RabinKeysGenerator.GetKeys();
-            PublicKey = currentKeys.Item3.ToString();
+            p = RabinKeysGenerator.GenerateKey();
+            q = RabinKeysGenerator.GenerateKey();
+            publicKey = p * q;
+            PublicKeyString = publicKey.ToString();
         }
 
         void OnRefreshPublicKey(object sender)
         {
-            var newKeys = RabinKeysGenerator.GetKeys();
-            currentKeys = new Tuple<long, long, long>(currentKeys.Item1, currentKeys.Item2, newKeys.Item3);
-            PublicKey = currentKeys.Item3.ToString();
+
         }
 
         void OnLoadFile(object sender)
@@ -189,7 +167,6 @@ namespace RabinEncryption.WPF.ViewModels
             bool? res = dialog.ShowDialog();
             if (res != true) return;
             var fileName = dialog.FileName;
-
             var bytes = DecryptedString.Split(new string[] {" "}, StringSplitOptions.None).Select(byte.Parse).ToArray();
             File.WriteAllBytes(fileName, bytes);
         }

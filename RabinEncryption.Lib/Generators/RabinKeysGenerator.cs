@@ -1,23 +1,27 @@
 ﻿using System;
+using RabinEncryption.Lib.Rabin;
 
 namespace RabinEncryption.Lib.Generators
 {
     public static class RabinKeysGenerator
     {
-        public static Tuple<long, long, long> GetKeys()
+        private const int KeyLenght = 1024;
+
+        public static BigNumber GenerateKey()
         {
-            long n = 0, p = 0, q = 0;
-            while (p % 4 != 3 || q % 4 != 3)
+            return GetRandomPrime(KeyLenght);
+        }
+
+        static BigNumber GetRandomPrime(int bytesLength)
+        {
+            var random = new Random();
+            BigNumber prime;
+            do
             {
-                p = PrimeGenerator.GeneratePrime();
-                q = PrimeGenerator.GeneratePrime();
-                while (p == q)
-                {
-                    q = PrimeGenerator.GeneratePrime();
-                }
+                prime = BigNumber.GetPseudoPrime(bytesLength, 10, random);
             }
-            n = p * q;
-            return new Tuple<long, long, long>(p, q, n);
+            while (prime % BigNumber.Four != BigNumber.Three);
+            return prime;
         }
     }
 }

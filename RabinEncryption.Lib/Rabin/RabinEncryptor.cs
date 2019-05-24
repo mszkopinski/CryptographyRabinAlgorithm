@@ -1,97 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Linq;
 using RabinEncryption.Lib.Extensions;
-using RabinEncryption.Lib.Generators;
 
 namespace RabinEncryption.Lib.Rabin
 {
     public interface IRabinEncryptor
     {
-        List<long> Encrypt(long cipherText, long publicKey, out long breakSize);
+        BigNumber[] Encrypt(byte[] cipherText, BigNumber privateKey, BigNumber publicKey);
     }
 
     public class RabinEncryptor : IRabinEncryptor
     {
-        List<int> binaryArrM = new List<int>();
-        List<int> binaryArrN = new List<int>();
-
-        readonly List<List<int>> brokenMessage = new List<List<int>>();
-        readonly List<long> finalMessage = new List<long>();
-
-        public List<long> Encrypt(long cipherText, long publicKey, out long breakSize)
+        public BigNumber[] Encrypt(byte[] cipherText, BigNumber privateKey, BigNumber publicKey)
         {
-            binaryArrM.Clear();
-            binaryArrN.Clear();
-            brokenMessage.Clear();
-            finalMessage.Clear();
-
-            binaryArrM = BinaryGenerator.GenerateBinary(cipherText);
-            binaryArrN = BinaryGenerator.GenerateBinary(cipherText);
-
-            binaryArrM = binaryArrM.GetReversed();
-            binaryArrN = binaryArrN.GetReversed();
-            breakSize = 0;
-
-            var binMsgWithPadding = new List<int>(binaryArrM) {0, 0, 0};
-            long padMsg = DecimalGenerator.GetDecimal(binMsgWithPadding);
-
-            if (padMsg < publicKey)
+            while (cipherText.Length % 61 != 0)
             {
-                var c = (long)(Math.Pow(padMsg, 2) % publicKey);
-                finalMessage.Add(c);
-                breakSize = binaryArrM.Count; 
+                cipherText = cipherText.Concat(new byte[] { 0 }).ToArray();
             }
-            else if (padMsg >= publicKey)
+
+            var blocksLength = cipherText.Length / 61;
+            var cipherTextBlockBytes = new byte[blocksLength, 64];
+
+            for (int i = 0; i < blocksLength; i++)
             {
-                //Normalized padding
-                var nSize = binaryArrN.Count;
-                var mSize = binaryArrM.Count;
-                breakSize = nSize / 2;
-                long toAdd;
-                if (mSize % breakSize == 0)
-                {
-                    toAdd = 0;
-                }
-                else
-                {
-                    toAdd = breakSize - mSize % breakSize;
-                }
+                for (int j = 0; j < 61; j++)
+                    cipherTextBlockBytes[i, j] = cipherText[i * 61 + j];
 
-                binaryArrM.Reverse();
-                for (long i = 0; i < toAdd; i++)
-                {
-                    binaryArrM.Add(0);
-                }
-
-                var normalizedMsg = binaryArrM.GetReversed();
-                // breaking data
-                var k = 0;
-                long noBreaks = normalizedMsg.Count / breakSize;
-                for (long i = 0; i < noBreaks; i++)
-                {
-                    var piece = new List<int>();
-                    for (long j = 0; j < breakSize; j++)
-                    {
-                        piece.Add(normalizedMsg[k]);
-                        ++k;
-                    }
-                    brokenMessage.Add(piece);
-
-                }
-                k = 0;
-
-                for (int i = 0; i < noBreaks; i++)
-                {
-                    brokenMessage[i].Add(0);
-                    brokenMessage[i].Add(0);
-                    brokenMessage[i].Add(0);
-                    k++;
-                    var c = DecimalGenerator.GetDecimal(brokenMessage[i]);
-                    c = (long)(Math.Pow(c, 2) % publicKey);
-                    finalMessage.Add(c);
-                }
+                var privateKeyBytes = privateKey.GetBytes();
+                cipherTextBlockBytes[i, 61] = privateKeyBytes[privateKeyBytes.Length - 3];
+                cipherTextBlockBytes[i, 62] = privateKeyBytes[privateKeyBytes.Length - 2];
+                cipherTextBlockBytes[i, 63] = privateKeyBytes[privateKeyBytes.Length - 1];
             }
-            return finalMessage;
+
+            var messageBlocks = new BigNumber[blocksLength];
+            for (int i = 0; i < blocksLength; i++)
+            {
+                messageBlocks[i] = new BigNumber(cipherTextBlockBytes.GetRow(i).ToArray());
+            }
+
+            var length = cipherTextBlockBytes.LongLength / 64;
+            var encryptedMessageBlocks = new BigNumber[length];
+
+            for (int i = 0; i < length; ++i)
+            {
+                encryptedMessageBlocks[i] = messageBlocks[i].ModPow(BigNumber.Two, publicKey);
+            }
+            return encryptedMessageBlocks;
         }
     }
 }
